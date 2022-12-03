@@ -1,4 +1,4 @@
-use std::fs;
+use std::{collections::HashSet, fs};
 fn main() {
     let letters = ('a'..='z')
         .chain('A'..='Z')
@@ -12,16 +12,17 @@ fn main() {
     println!(
         "Sum of priorities: {:?}",
         rucksacks.iter().fold(0, |mut acc, sack| {
-            let (first_c, second_c) = sack.split_at(sack.len() / 2);
-            let first_c_items: Vec<char> = first_c.chars().collect();
-            let second_c_items: Vec<char> = second_c.chars().collect();
+            let (first_comp, second_comp) = &sack.split_at(sack.len() / 2);
 
-            for item in second_c_items {
-                if first_c_items.contains(&item) {
-                    acc += letters.iter().position(|&ch| ch == item).unwrap() + 1;
-                    break;
-                }
-            }
+            acc += first_comp
+                .chars()
+                .collect::<HashSet<char>>()
+                .intersection(&second_comp.chars().collect::<HashSet<char>>())
+                .fold(0, |mut acc, el| {
+                    acc += letters.iter().position(|&ch| ch == *el).unwrap() + 1;
+                    acc
+                });
+
             acc
         })
     );
@@ -34,11 +35,11 @@ fn main() {
                 .position(|&ch| {
                     ch == *group[0]
                         .chars()
-                        .collect::<Vec<char>>()
+                        .collect::<HashSet<char>>()
                         .iter()
                         .find(|&&c| {
-                            group[1].chars().collect::<Vec<char>>().contains(&c)
-                                && group[2].chars().collect::<Vec<char>>().contains(&c)
+                            group[1].chars().collect::<HashSet<char>>().contains(&c)
+                                && group[2].chars().collect::<HashSet<char>>().contains(&c)
                         })
                         .unwrap()
                 })
