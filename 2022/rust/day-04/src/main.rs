@@ -18,12 +18,11 @@ fn main() {
             full_overlap_sum += 1;
         }
 
-        let first_range = first_pair[0]..=first_pair[1];
-        let second_range = second_pair[0]..=second_pair[1];
+        let first_range_set: HashSet<u32> = HashSet::from_iter(first_pair[0]..=first_pair[1]);
+        let second_range_set: HashSet<u32> = HashSet::from_iter(second_pair[0]..=second_pair[1]);
 
-        if first_range
-            .collect::<HashSet<u32>>()
-            .intersection(&second_range.collect::<HashSet<u32>>())
+        if first_range_set
+            .intersection(&second_range_set)
             .collect::<Vec<&u32>>()
             .len()
             > 0
