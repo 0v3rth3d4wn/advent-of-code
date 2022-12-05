@@ -48,12 +48,15 @@ fn main() {
         }
     }
 
-    println!("Crate Mover 9000");
-    for crt in crates_9000 {
-        print!("{}", crt.last().unwrap());
-    }
-
-    println!();
+    println!(
+        "Crate Mover 9000: {:?}",
+        crates_9000
+            .iter()
+            .fold(String::from(""), |mut acc: String, c| {
+                acc.push_str(&c.last().unwrap().to_string());
+                acc
+            })
+    );
 
     let mut crates_9001 = parse_crates(crates);
     for mv in &moves {
@@ -71,10 +74,13 @@ fn main() {
         }
     }
 
-    println!("Crate Mover 9001");
-    for crt in crates_9001 {
-        print!("{}", crt.last().unwrap());
-    }
-
-    println!();
+    println!(
+        "Crate Mover 9001: {:?}",
+        crates_9001
+            .iter()
+            .fold(String::from(""), |mut acc: String, c| {
+                acc.push_str(&c.last().unwrap().to_string());
+                acc
+            })
+    );
 }
