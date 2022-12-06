@@ -1,19 +1,14 @@
 use std::{collections::HashSet, fs};
 
-fn parse_buf(buf: &str, mark: usize) -> Option<usize> {
-    for i in 0..=buf.len() - mark {
-        if &buf[i..i + mark]
-            .chars()
-            .collect::<HashSet<char>>()
-            .into_iter()
-            .collect::<Vec<char>>()
-            .len()
-            == &mark
-        {
-            return Some(i + mark);
-        }
-    }
-    None
+fn parse_buf(buf: &str, mark: usize) -> usize {
+    buf.chars()
+        .collect::<Vec<char>>()
+        .windows(mark)
+        .enumerate()
+        .find(|(_i, b)| b.to_vec().iter().collect::<HashSet<&char>>().len() == mark)
+        .unwrap()
+        .0
+        + mark
 }
 
 fn main() {
@@ -21,6 +16,6 @@ fn main() {
         .unwrap()
         .trim_end()
         .to_string();
-    println!("start-of-packet: {}", parse_buf(&buf, 4).unwrap());
-    println!("start-of-message: {}", parse_buf(&buf, 14).unwrap());
+    println!("start-of-packet: {:?}", parse_buf(&buf, 4));
+    println!("start-of-message: {:?}", parse_buf(&buf, 14));
 }
