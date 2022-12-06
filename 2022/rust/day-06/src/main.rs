@@ -1,9 +1,15 @@
-use std::fs;
+use std::{collections::HashSet, fs};
 
 fn parse_buf(buf: &str, mark: usize) -> Option<usize> {
     for i in 0..=buf.len() - mark {
-        let batch = &buf[i..i + mark];
-        if batch.chars().find(|c| batch.matches(*c).count() > 1) == None {
+        if &buf[i..i + mark]
+            .chars()
+            .collect::<HashSet<char>>()
+            .into_iter()
+            .collect::<Vec<char>>()
+            .len()
+            == &mark
+        {
             return Some(i + mark);
         }
     }
