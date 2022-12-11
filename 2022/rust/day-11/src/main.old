@@ -1,0 +1,71 @@
+for _i in 0..20 {
+        for monkey in 0..monkey_map.len() as u32 {
+            let curr_monkey = monkey_map.get(&monkey).unwrap();
+            let operation: Vec<&str> = curr_monkey
+                .get("operation")
+                .unwrap()
+                .split_ascii_whitespace()
+                .collect();
+
+            let test = curr_monkey.get("test").unwrap().parse::<u32>().unwrap();
+
+            let test_true = curr_monkey
+                .get("test_true")
+                .unwrap()
+                .parse::<u32>()
+                .unwrap();
+
+            let test_false = curr_monkey
+                .get("test_false")
+                .unwrap()
+                .parse::<u32>()
+                .unwrap();
+
+            for curr_monkey_item in curr_monkey
+                .get("items")
+                .unwrap()
+                .split(", ")
+                .map(|i| i.parse().unwrap())
+                .collect::<Vec<u32>>()
+            {
+                let worry_level = match *operation.first().unwrap() {
+                    "*" => (curr_monkey_item as f32 * {
+                        if *operation.last().unwrap() == "old" {
+                            curr_monkey_item as f32
+                        } else {
+                            operation.last().unwrap().parse::<f32>().unwrap()
+                        }
+                    } / 3_f32)
+                        .floor(),
+                    "+" => (curr_monkey_item as f32 + {
+                        if *operation.last().unwrap() == "old" {
+                            curr_monkey_item as f32
+                        } else {
+                            operation.last().unwrap().parse::<f32>().unwrap()
+                        }
+                    } / 3_f32)
+                        .floor(),
+                    _ => 0.0,
+                };
+
+                let mut push_item = String::from(", ");
+                push_item.push_str(&worry_level.to_string());
+
+                if worry_level as u32 % test == 0 {
+                    let mut_items = monkey_map
+                        .get_mut(&test_true)
+                        .unwrap()
+                        .get_mut("items")
+                        .unwrap();
+                    *mut_items = "";
+                } else {
+                    let mut_items = monkey_map
+                        .get_mut(&test_false)
+                        .unwrap()
+                        .get_mut("items")
+                        .unwrap();
+                    *mut_items = "";
+                }
+            }
+        }
+    }
