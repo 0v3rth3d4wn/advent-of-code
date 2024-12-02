@@ -2,6 +2,19 @@ use colored::*;
 use std::fs;
 
 fn main() {
+    let count = [1, 4, 7, 4, 2].windows(2).fold(0, |mut acc, x| {
+        if x.into_iter().sum::<u32>() == 6 {
+            acc += 1;
+        }
+
+        acc
+    });
+    let count = [1, 5, 7, 4, 2]
+        .windows(2)
+        .map(|s| s.into_iter().sum::<u32>())
+        .filter(|&n| n == 6)
+        .count();
+    println!("{}", count);
     let data = "data.txt";
     let game = fs::read_to_string(data).unwrap();
     let game: Vec<&str> = game.trim().split("\n").collect();

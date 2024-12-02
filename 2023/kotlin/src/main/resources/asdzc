@@ -1,0 +1,104 @@
+import java.io.File
+
+fun solution(record: String, start: Int, last: Int, list: MutableList<String>): MutableList<String> {
+    if (start == last) {
+//        print(record + " \n")
+        list.add(record)
+        return list
+    }
+    // Find result using recursion
+    solution(record + '0'.toString(), start + 1, last, list)
+    solution(record + '1'.toString(), start + 1, last, list)
+
+    return list
+}
+
+fun binaryString(n: Int): MutableList<String> {
+    // N indicate digit in binary
+    if (n <= 0) {
+        return mutableListOf()
+    }
+
+    return solution("", 0, n, mutableListOf())
+}
+
+fun generateBinary(n: Int): List<String> {
+    val combs = mutableListOf<String>()
+    for (i in 1..n) {
+        var str = ""
+        var temp = i
+
+        while (temp != 0) {
+            str = if (temp and 1 == 1) {
+                "#$str"
+            } else {
+                ".$str"
+            }
+
+            temp = temp shr 1
+        }
+
+        combs.add(str)
+    }
+
+    return combs
+}
+
+fun p01(input: List<String>) {
+    var sum = 0
+    for (row in input) {
+        val conditions = row.split(" ").first
+        val unknownCount = conditions.count { it == '?' }
+        val groups = row.split(" ").last.split(",").map { it.toInt() }
+//        val combinations = generateBinary(unknownCount * 2 - 1).map { it.padStart(unknownCount, '.') }
+        val combinations = binaryString(unknownCount).map { it.replace('0', '.').replace('1', '#') }
+
+
+//        println(conditions)
+        println(combinations)
+        val brokenIndexes = conditions.mapIndexedNotNull { index, c -> index.takeIf { c == '?' } }
+////        println(brokenIndexes)
+        val regex = StringBuilder("(\\.*)?")
+        for (g in groups) {
+            regex.append("(")
+            regex.append("#".repeat(g))
+            regex.append(")")
+
+            if (groups.indexOf(g) == groups.size - 1) {
+                regex.append("(\\.*)?")
+            } else {
+                regex.append("(\\.+)")
+            }
+        }
+
+        for (i in combinations.indices) {
+            val sb = StringBuilder(conditions)
+//            println(sb.toString())
+
+            for (j in brokenIndexes) {
+//                println("Set at $j -> ${combinations[i][brokenIndexes.indexOf(j)]}")
+
+                sb.setCharAt(j, combinations[i][brokenIndexes.indexOf(j)]).toString()
+            }
+
+//            println(sb.toString())
+
+
+            println("Check regex: ${regex.toString().toRegex()}")
+            if (sb.toString().matches(regex.toString().toRegex())) {
+                println("matches $sb")
+                sum += 1
+            }
+
+
+        }
+    }
+
+    println(sum)
+}
+
+fun main() {
+    val lines = File("src/main/resources/demo").readLines()
+
+    p01(lines)
+}
