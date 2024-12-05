@@ -1,0 +1,8 @@
+Layout/LineLength:
+  Max: 120 # Changes the maximum line length to 120 characters
+
+Style/SingleLineMethods:
+  Enabled: false
+
+Style/ParallelAssignment:
+  Enabled: false
